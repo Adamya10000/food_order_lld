@@ -85,14 +85,14 @@ public class Main {
                 boolean Found = false;
                 for (Customer cus : Customer.customers) {
                     if (cus.getId().equals(id) && cus.getPass().equals(pass)) {
-                        System.out.println("You are logged in as a Student");
+                        System.out.println("You are logged in as a Customer");
                         Found = true;
                         cus.cusfunc();
                         break;
                     }
                 }
                 if (!Found) {
-                    throw new InvalidLoginException("Invalid student login");
+                    throw new InvalidLoginException("Invalid login");
                 }
                 break;
             case 2:

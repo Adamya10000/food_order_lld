@@ -21,8 +21,8 @@ public class Admin {
             System.out.println("""
                     
                     Select action:
-                     1.Menu Management
-                     2.Order Management
+                     1.Manage menu
+                     2.Manage order
                      3.Generate Report
                      4.Exit""");
 

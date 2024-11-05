@@ -264,6 +264,9 @@ public class Customer {
             int choice = Main.getIntInput();
             switch (choice) {
                 case 1:
+                    if(orderHistory.isEmpty()){
+                        System.out.println("No pending orders.");
+                    }
                     for(Order o : orderHistory) {
                         if(o.getStatus() !=OrderStatus.Cancelled && o.getStatus()!=OrderStatus.Delivered){
                             o.displayOrderDetails();
@@ -301,15 +304,19 @@ public class Customer {
                         System.out.println("Enter order id to repeat:");
                         int orderId = Main.getIntInput();
                         boolean f=false;
-                        for(Order o: orderHistory){
-                            if(o.getOrderId() == orderId){
-                                f=true;
-                                Order repeat = new Order(o);
-                                orderHistory.add(repeat);
+                        Order repeat=null;
+                        for (Order o : orderHistory) {
+                            if (o.getOrderId() == orderId) {
+                                f = true;
+                                repeat = new Order(o);
                             }
                         }
                         if(!f){
                             System.out.println("Order not found.");
+                        }
+                        else {
+                            orderHistory.add(repeat);
+                            System.out.println("Order repeated successfully.");
                         }
                     }
                     break;
