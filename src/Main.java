@@ -77,7 +77,6 @@ public class Main {
         performLogin(c, id, pass, admin_id, admin_pass);
     }
 
-    // New method to handle login logic, which can be used for both interactive and test scenarios
     public static void performLogin(int userType, String id, String pass,
                                     String admin_id, String admin_pass) throws InvalidLoginException {
         switch (userType) {
