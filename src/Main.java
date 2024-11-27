@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.*;
 
 public class Main {
@@ -19,23 +20,9 @@ public class Main {
         Customer c2 = new Customer("cust2", "pass2", "Tanish Goel");
         Customer c3 = new Customer("cust3", "pass3", "Dheeraj Arora");
 
-        HashMap<Item, Integer> order1Items = new HashMap<>();
-        order1Items.put(Item.getItemById(101), 2);
-        order1Items.put(Item.getItemById(103), 1);
-        Order order1 = new Order(order1Items, false, "No onions");
-
-        HashMap<Item, Integer> order2Items = new HashMap<>();
-        order2Items.put(Item.getItemById(102), 1);
-        order2Items.put(Item.getItemById(104), 3);
-        Order order2 = new Order(order2Items, true, "");
-
-        c1.orderHistory.add(order1);
-        c2.orderHistory.add(order2);
-        Admin.pendingOrders.add(order1);
-        Admin.pendingOrders.add(order2);
-
         while (true) {
-            System.out.println("Welcome to Byte me!(please select your action 1/2/3):\n 1.Log in\n 2.Sign up\n 3.Exit");
+            System.out.println("Welcome to Byte me!(please select your action 1/2/3/4):\n" +
+                    " 1.Log in\n 2.Sign up\n 3.Open GUI\n 4.Exit");
             choice = getIntInput();
 
             switch (choice) {
@@ -50,6 +37,12 @@ public class Main {
                     signUp();
                     break;
                 case 3:
+                    SwingUtilities.invokeLater(() -> {
+                        GUI gui = new GUI();
+                        gui.setVisible(true);
+                    });
+                    break;
+                case 4:
                     System.out.println("Exiting the system.");
                     return;
                 default:
@@ -63,12 +56,12 @@ public class Main {
         String id, pass;
 
         System.out.println("""
-                
-                Please select user type:
-                 1.Customer
-                 2.Admin
-                 3.Exit
-                """);
+            
+            Please select user type:
+             1.Customer
+             2.Admin
+             3.Exit
+            """);
         c = getIntInput();
 
         if (c == 3) {
@@ -80,7 +73,14 @@ public class Main {
         System.out.println("Enter your password: ");
         pass = in.nextLine();
 
-        switch (c) {
+
+        performLogin(c, id, pass, admin_id, admin_pass);
+    }
+
+    // New method to handle login logic, which can be used for both interactive and test scenarios
+    public static void performLogin(int userType, String id, String pass,
+                                    String admin_id, String admin_pass) throws InvalidLoginException {
+        switch (userType) {
             case 1:
                 boolean Found = false;
                 for (Customer cus : Customer.customers) {
@@ -107,6 +107,7 @@ public class Main {
                 break;
             default:
                 System.out.println("Invalid user type");
+                throw new InvalidLoginException("Invalid user type");
         }
     }
 

@@ -80,6 +80,7 @@ public class Admin {
                     }
 
                     System.out.println("Item added successfully.");
+                    GUI.refreshData();
                     break;
 
                 case 2:
@@ -146,6 +147,7 @@ public class Admin {
                                     break;
 
                                 case 5:
+                                    GUI.refreshData();
                                     return;
 
                                 default:
@@ -170,6 +172,7 @@ public class Admin {
                     } else {
                         System.out.println("Item not found.");
                     }
+                    GUI.refreshData();
                     break;
 
                 case 4:
@@ -245,10 +248,12 @@ public class Admin {
                                 System.out.println("Invalid status choice.");
                                 break;
                         }
+                        FileHandler.saveOrderHistory(orderToUpdate.getCustomer());
                         System.out.println("Order status updated successfully.");
                     } else {
                         System.out.println("Order not found.");
                     }
+                    GUI.refreshData();
                     break;
 
                 case 3:

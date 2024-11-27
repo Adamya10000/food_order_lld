@@ -3,13 +3,14 @@ import java.util.*;
 public class Order {
     private int orderId;
     private static int nextOrderId = 1001;
-    private HashMap<Item, Integer> orderItems;
+    public HashMap<Item, Integer> orderItems;
     private double totalPrice;
     private OrderStatus status;
     private boolean isVIP;
     private String specialRequest;
+    private Customer customer;
 
-    public Order(HashMap<Item, Integer> cart, boolean isVIP, String specialRequest) {
+    public Order(HashMap<Item, Integer> cart, boolean isVIP, String specialRequest,Customer customer) {
         this.orderId = nextOrderId++;
         this.orderItems = new HashMap<>(cart);
         this.totalPrice = calculateTotalPrice();
@@ -17,6 +18,7 @@ public class Order {
         this.isVIP = isVIP;
         this.specialRequest = specialRequest;
         Admin.pendingOrders.add(this);
+        this.customer = customer;
     }
 
     public Order(Order other){
@@ -26,6 +28,7 @@ public class Order {
         this.status = OrderStatus.Received;
         this.isVIP = other.isVIP;
         this.specialRequest = other.specialRequest;
+        this.customer = other.customer;
         Admin.pendingOrders.add(this);
     }
 
@@ -39,6 +42,10 @@ public class Order {
 
     public int getOrderId() {
         return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public OrderStatus getStatus() {
@@ -55,6 +62,14 @@ public class Order {
 
     public boolean isVIP() {
         return isVIP;
+    }
+
+    public String getSpecialRequest() {
+        return specialRequest;
+    }
+
+    public Customer getCustomer() {
+        return customer;
     }
 
     public void displayOrderDetails() {

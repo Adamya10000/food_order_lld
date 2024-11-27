@@ -1,0 +1,4 @@
+ORDER_START|1002|false|Out_for_Delivery|180.0|
+ITEM|102|1
+ITEM|104|3
+ORDER_END

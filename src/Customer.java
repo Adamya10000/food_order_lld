@@ -5,7 +5,7 @@ public class Customer {
     private String pass;
     private String name;
     public static ArrayList<Customer> customers = new ArrayList<>();
-    private HashMap<Item,Integer> cart = new HashMap<>();
+    private HashMap<Item,Integer> cart;
     public ArrayList<Order> orderHistory = new ArrayList<>();
     private boolean isVIP;
     public static Scanner in = new Scanner(System.in);
@@ -15,7 +15,9 @@ public class Customer {
         this.pass = pass;
         this.name = name;
         this.isVIP = false;
+        this.cart = new HashMap<>();
         customers.add(this);
+        loadSavedState();
     }
 
     public void cusfunc(){
@@ -170,6 +172,7 @@ public class Customer {
                 System.out.print("Enter quantity: ");
                 int quantity = Main.getIntInput();
                 cart.put(item, cart.getOrDefault(item, 0) + quantity);
+                saveCurrentState();
                 System.out.println("Added to cart successfully.");
             }
             else{
@@ -177,6 +180,21 @@ public class Customer {
             }
         } else {
             System.out.println("Item not found.");
+        }
+    }
+
+    public void addItemToCart(Item item, int quantity) {
+        if(item != null) {
+            if(item.getAvailable()) {
+                cart.put(item, cart.getOrDefault(item, 0) + quantity);
+                saveCurrentState();
+                System.out.println("Added to cart successfully.");
+            }
+            else {
+                throw new IllegalStateException("That item is not available.");
+            }
+        } else {
+            throw new IllegalArgumentException("Item cannot be null");
         }
     }
 
@@ -192,6 +210,7 @@ public class Customer {
             System.out.print("Enter new quantity: ");
             int newQuantity = Main.getIntInput();
             cart.put(item, newQuantity);
+            saveCurrentState();
             System.out.println("Quantity updated successfully.");
         } else {
             System.out.println("Item not in cart.");
@@ -208,6 +227,7 @@ public class Customer {
         Item item = Item.getItemById(itemId);
         if (cart.containsKey(item)) {
             cart.remove(item);
+            saveCurrentState();
             System.out.println("Item removed from cart successfully.");
         } else {
             System.out.println("Item not in cart.");
@@ -241,14 +261,16 @@ public class Customer {
         if (amount >= totalPrice) {
             System.out.println("Do you have any special requests?(press enter for none)");
             String special = in.nextLine();
-            Order o = new Order(new HashMap<>(cart), isVIP,special);
+            Order o = new Order(new HashMap<>(cart), isVIP,special,this);
             orderHistory.add(o);
             cart.clear();
+            saveCurrentState();
             System.out.println("Order placed successfully! Order ID: " + o.getOrderId());
         }
         else {
             System.out.println("Insufficient amount payed.");
         }
+        GUI.refreshData();
     }
 
     private void track() {
@@ -284,7 +306,8 @@ public class Customer {
                             if(answer.equalsIgnoreCase("y")){
                                 o.setStatus(OrderStatus.Cancelled);
                                 Admin.pendingOrders.remove(o);
-                                Admin.completedOrders.remove(o);
+                                Admin.completedOrders.add(o);
+                                saveCurrentState();
                                 System.out.println("Order cancelled.");
                             }
                         }
@@ -293,6 +316,7 @@ public class Customer {
                         System.out.println("No cancellable orders.");
 
                     }
+                    GUI.refreshData();
                     break;
                 case 3:
                     for(Order o: orderHistory){
@@ -316,9 +340,11 @@ public class Customer {
                         }
                         else {
                             orderHistory.add(repeat);
+                            saveCurrentState();
                             System.out.println("Order repeated successfully.");
                         }
                     }
+                    GUI.refreshData();
                     break;
                 case 4:
                     return;
@@ -376,6 +402,16 @@ public class Customer {
         } else {
             System.out.println("Insufficient amount to become VIP.");
         }
+    }
+
+    public void saveCurrentState() {
+        FileHandler.saveOrderHistory(this);
+        FileHandler.saveCart(this.id, this.cart);
+    }
+
+    public void loadSavedState() {
+        FileHandler.loadOrderHistory(this);
+        this.cart = FileHandler.loadCart(this.id);
     }
 
     public String getId() {
